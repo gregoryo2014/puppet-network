@@ -276,6 +276,9 @@ allow-hotplug <%= @interface %>
 <% if @ovs_bridge -%>
     ovs_bridge <%= @ovs_bridge %>
 <% end -%>
+<% if @type != 'Ethernet' -%>
+    ovs_type <%= @type %>
+<% end -%>
 <% if @ovs_ports -%>
     ovs_ports <%= @ovs_ports.join(' ') %>
 <% end -%>
@@ -323,4 +326,4 @@ auto <%= @interface %>:0
 <% @options_extra_debian.each do |k,v| -%>
     <%= k %> <%= v %>
 <% end -%>
-<% end -%>
+<% end %>
