@@ -5,6 +5,11 @@
 <% if @auto -%>
 auto <%= @interface %>
 <% end -%>
+<% if @allow_ovs -%>
+allow-ovs <%= @interface %>
+<% elsif @ovs_bridge -%>
+allow-<%= @ovs_bridge %> <%= @interface %>
+<% end -%>
 <% if @allow_hotplug -%>
 allow-hotplug <%= @interface %>
 <% end -%>
@@ -272,7 +277,7 @@ allow-hotplug <%= @interface %>
     ovs_bridge <%= @ovs_bridge %>
 <% end -%>
 <% if @ovs_ports -%>
-    ovs_ports <%= @ovs_ports %>
+    ovs_ports <%= @ovs_ports.join(' ') %>
 <% end -%>
 <% if @ovs_type -%>
     ovs_type <%= @ovs_type %>

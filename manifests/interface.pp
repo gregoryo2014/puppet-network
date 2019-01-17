@@ -24,6 +24,10 @@
 #   * true   - Interface created and enabled at boot.
 #   * false  - Interface removed from boot.
 #
+#  $type          = 'Ethernet',
+#    Defaults to 'Ethernet', but following types are supported for OVS:
+#    "OVSPort", "OVSIntPort", "OVSBond", "OVSTunnel" and "OVSPatchPort".
+#
 # [*template*]
 #   String. Optional. Default: Managed by module.
 #   Provide an alternative custom template to use for configuration of:
@@ -104,10 +108,6 @@
 #
 # == RedHat only parameters
 #
-#  $type          = 'Ethernet',
-#    Defaults to 'Ethernet', but following types are supported for OVS:
-#    "OVSPort", "OVSIntPort", "OVSBond", "OVSTunnel" and "OVSPatchPort".
-#
 #  $ipaddr        = undef,
 #    Both ipaddress (standard name) and ipaddr (RedHat param name) if set
 #    configure the ipv4 address of the interface.
@@ -164,7 +164,7 @@
 #  $my_inner_ipaddr   = undef
 #    Local IP address of the tunnel interface.
 #
-# == RedHat only Open vSwitch specific parameters
+# == RedHat and Debian specific parameters for Open vSwitch
 #
 #  $devicetype      = undef,
 #    Always set to "ovs" if configuring OVS* type.
@@ -172,12 +172,26 @@
 #  $bond_ifaces     = undef,
 #    Physical interfaces for "OVSBond".
 #
+#  $ovs_type        = undef, # Debian
+#    Always set to "ovs" if configuring OVS* type.
+#
+#  $allow_ovs       = false, # Debian
+#    Whether to enable OVS for this interface. Valid values are true, false.
+#    Whether to enable an Open vSwitch bridge on interface. Valid values are
+#    true, false. Should be false for Open vSwitch ports.
+#
+#  $allow_ovs       = false,
+#    Whether to enable OVS for this interface. Valid values are true, false.
+#
+#  $ovs_bonds       = undef, # Debian
+#    Physical interfaces for "OVSBond".
+#
 #  $ovs_bridge      = undef,
 #    For types other than "OVSBridge" type. It specifies the OVS bridge
 #    to which port, patch or tunnel should be attached to.
 #
 #  $ovs_ports       = undef,
-#    It specifies the OVS ports should OVS bridge attach
+#    All of the ports that belong to the OVS bridge.
 #
 #  $ovs_extra       = undef,
 #    Optional: extra ovs-vsctl commands seperate by "--" (double dash)
@@ -243,6 +257,7 @@ define network::interface (
 
   $enable                = true,
   $ensure                = 'present',
+  $type                  = 'Ethernet',
   $template              = "network/interface/${::osfamily}.erb",
   $options               = undef,
   $options_extra_redhat  = undef,
@@ -374,7 +389,6 @@ define network::interface (
   $uuid                  = undef,
   $bootproto             = '',
   $userctl               = 'no',
-  $type                  = 'Ethernet',
   $ethtool_opts          = undef,
   $ipv6init              = undef,
   $ipv6_autoconf         = undef,
@@ -423,6 +437,7 @@ define network::interface (
   # RedHat and Debian specific for Open vSwitch
   $devicetype            = undef, # On RedHat. Same of ovs_type for Debian
   $bond_ifaces           = undef, # On RedHat Same of ovs_bonds for Debian
+  $allow_ovs             = false, # Debian
   $ovs_type              = undef, # Debian
   $ovs_bonds             = undef, # Debian
   $ovs_bridge            = undef,
